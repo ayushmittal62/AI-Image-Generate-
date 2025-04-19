@@ -12,10 +12,13 @@ export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
     if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Prompt is required" },
+        { status: 400 }
+      );
     }
 
-    const response = await client.images.generate({
+    const response = await (client.images.generate as any)({
       model: "black-forest-labs/flux-dev",
       response_format: "url",
       extra_body: {
@@ -39,6 +42,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ imageUrl: response.data[0].url });
   } catch (error: any) {
     console.error("Error generating image:", error);
-    return NextResponse.json({ error: error.message || "Failed to generate image" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Failed to generate image" },
+      { status: 500 }
+    );
   }
 }
